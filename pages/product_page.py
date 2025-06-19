@@ -16,10 +16,7 @@ class ProductPage(BasePage):
 
 
     def add_product_to_basket(self):
-
         button = self.browser.find_element(*ProductPageLocators.BUTTON_LINK)
-        # button = WebDriverWait(self.browser, 20).until(
-        #     EC.element_to_be_clickable(*ProductPageLocators.BUTTON_LINK))
         button.click()
         time.sleep(2)
 
@@ -33,4 +30,18 @@ class ProductPage(BasePage):
         book_price = self.browser.find_element(*ProductPageLocators.BOOK_PRICE).text
         official_price = self.browser.find_element(*ProductPageLocators.OFFICIAL_PRICE).text
         assert book_price == official_price, "The price is not correct"
+
+    def should_not_be_success_message(self):
+        assert not self.is_element_present(*ProductPageLocators.ADD_MESSAGE), \
+            "Success message is presented, but should not be"
+
+
+    def is_disappeared(self):
+        assert not self.is_element_present(*ProductPageLocators.ADD_MESSAGE), \
+            "Success message does not disappear"
+
+    def is_not_element_present(self):
+        assert not self.is_element_present(*ProductPageLocators.ADD_MESSAGE), \
+            "Success message is present"
+
 
