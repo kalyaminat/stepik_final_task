@@ -22,13 +22,11 @@ class TestUserAddToBasketFromProductPage():
         link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/"
         page = ProductPage(browser, link)
         page.open()
-        #page.register_new_user()
         page.add_product_to_basket()
-        #page.solve_quiz_and_get_code()
         page.is_book_name_correct()
         page.is_book_price_correct()
 
-    @pytest.mark.need_review
+
     def test_user_cant_see_success_message(self, browser):
         link = 'http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/'
         page = ProductPage(browser, link)
@@ -36,7 +34,7 @@ class TestUserAddToBasketFromProductPage():
         page.is_not_element_present()
 
 
-
+@pytest.mark.need_review
 @pytest.mark.parametrize('num', [*range(7), pytest.param(7, marks=pytest.mark.xfail), *range(8,10)])
 def test_guest_can_add_product_to_basket(browser, num):
     link =  f"http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer{num}"
