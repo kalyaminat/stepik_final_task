@@ -10,16 +10,10 @@ from selenium.webdriver.common.by import By
 
 
 class ProductPage(BasePage):
-    # def basket_button_is_active(self):
-    #     return WebDriverWait(self.browser, 15).until(EC.element_to_be_clickable(*ProductPageLocators.BUTTON_LINK ))
-        #return is_element_present(*ProductPageLocators.BUTTON_LINK)
-
-
     def add_product_to_basket(self):
         button = self.browser.find_element(*ProductPageLocators.BUTTON_LINK)
         button.click()
         time.sleep(2)
-
 
     def is_book_name_correct(self):
         book_name = self.browser.find_element(*ProductPageLocators.BOOK_NAME).text
@@ -34,7 +28,6 @@ class ProductPage(BasePage):
     def should_not_be_success_message(self):
         assert not self.is_element_present(*ProductPageLocators.ADD_MESSAGE), \
             "Success message is presented, but should not be"
-
 
     def is_disappeared(self):
         assert not self.is_element_present(*ProductPageLocators.ADD_MESSAGE), \

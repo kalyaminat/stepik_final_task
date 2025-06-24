@@ -1,10 +1,5 @@
 from .base_page import BasePage
 from .locators import LoginPageLocators
-from selenium.webdriver.support import expected_conditions as EC
-from random_word import RandomWords
-# r = RandomWords()
-# email = r.get_random_word() + "@fakemail.org"
-# password = r.get_random_word() + "123"
 
 
 class LoginPage(BasePage):
@@ -30,9 +25,6 @@ class LoginPage(BasePage):
         assert True
 
     def register_new_user(self, email, password):
-        # r = RandomWords()
-        # self.email = r.get_random_word() + "@fakemail.org"
-        # self.password = r.get_random_word() + "123"
         email = self.browser.find_element(*LoginPageLocators.REMAIL)
         email.send_key(self.email)
         password = self.browser.find_element(*LoginPageLocators.RPASSWORD)
