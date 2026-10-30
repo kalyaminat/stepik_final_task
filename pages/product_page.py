@@ -1,40 +1,56 @@
-from selenium.webdriver.chrome.webdriver import WebDriver
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support.wait import WebDriverWait
+
 from .base_page import BasePage
 from .locators import ProductPageLocators
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import NoAlertPresentException
-import time
-from selenium.webdriver.common.by import By
 
 
 class ProductPage(BasePage):
     def add_product_to_basket(self):
-        button = self.browser.find_element(*ProductPageLocators.BUTTON_LINK)
+        button = WebDriverWait(self.browser, self.timeout).until(
+            EC.element_to_be_clickable(ProductPageLocators.BUTTON_LINK)
+        )
         button.click()
-        time.sleep(2)
 
     def is_book_name_correct(self):
-        book_name = self.browser.find_element(*ProductPageLocators.BOOK_NAME).text
-        book_title = self.browser.find_element(*ProductPageLocators.BOOK_TITLE).text
-        assert book_name == book_title, "The book's name is wrong"
+        book_name = WebDriverWait(self.browser, self.timeout).until(
+            EC.visibility_of_element_located(ProductPageLocators.BOOK_NAME)
+        ).text
+        book_title = WebDriverWait(self.browser, self.timeout).until(
+            EC.visibility_of_element_located(ProductPageLocators.BOOK_TITLE)
+        ).text
+
+        assert book_name == book_title, (
+            f"Название в сообщении: {book_name!r}; "
+            f"название товара: {book_title!r}"
+        )
 
     def is_book_price_correct(self):
-        book_price = self.browser.find_element(*ProductPageLocators.BOOK_PRICE).text
-        official_price = self.browser.find_element(*ProductPageLocators.OFFICIAL_PRICE).text
-        assert book_price == official_price, "The price is not correct"
+        book_price = WebDriverWait(self.browser, self.timeout).until(
+            EC.visibility_of_element_located(ProductPageLocators.BOOK_PRICE)
+        ).text
+        official_price = WebDriverWait(self.browser, self.timeout).until(
+            EC.visibility_of_element_located(
+                ProductPageLocators.OFFICIAL_PRICE
+            )
+        ).text
+
+        assert book_price == official_price, (
+            f"Сумма в сообщении: {book_price!r}; "
+            f"цена товара: {official_price!r}"
+        )
 
     def should_not_be_success_message(self):
-        assert not self.is_element_present(*ProductPageLocators.ADD_MESSAGE), \
-            "Success message is presented, but should not be"
+        assert super().is_not_element_present(
+            *ProductPageLocators.ADD_MESSAGE,
+            timeout=4,
+        ), "Сообщение об успешном добавлении присутствует"
 
     def is_disappeared(self):
-        assert not self.is_element_present(*ProductPageLocators.ADD_MESSAGE), \
-            "Success message does not disappear"
+        assert super().is_disappeared(
+            *ProductPageLocators.ADD_MESSAGE,
+            timeout=4,
+        ), "Сообщение об успешном добавлении не исчезло"
 
     def is_not_element_present(self):
-        assert not self.is_element_present(*ProductPageLocators.ADD_MESSAGE), \
-            "Success message is present"
-
-
+        self.should_not_be_success_message()

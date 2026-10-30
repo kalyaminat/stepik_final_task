@@ -2,20 +2,35 @@ from .pages.product_page import ProductPage
 import pytest
 from .pages.login_page import LoginPage
 from .pages.basket_page import BasketPage
-from random_word import RandomWords
+# from random_word import RandomWords
 
 
 class TestUserAddToBasketFromProductPage():
-    pytest.fixture(scope="function", autouse=True)
+    # pytest.fixture(scope="function", autouse=True)
+    # def setup(self, browser):
+    #     self.login_page = LoginPage(browser,self.login.link)
+    #     self.login_link = 'https://selenium1py.pythonanywhere.com/ru/accounts/login/'
+    #     r = RandomWords()
+    #     email = r.get_random_word() + "@fakemail.org"
+    #     password = r.get_random_word() + "123"
+    #     self.login_page.open()
+    #     self.login_page.register_new_user()
+    #     self.login_page.should_be_authorized_user()
+    @pytest.fixture(scope="function", autouse=True)
     def setup(self, browser):
-        self.login_page = LoginPage(browser,self.login.link)
-        self.login_link = 'https://selenium1py.pythonanywhere.com/ru/accounts/login/'
-        r = RandomWords()
-        email = r.get_random_word() + "@fakemail.org"
-        password = r.get_random_word() + "123"
-        self.login_page.open()
-        self.login_page.register_new_user()
-        self.login_page.should_be_authorized_user()
+        from uuid import uuid4
+
+        login_link = (
+            "https://selenium1py.pythonanywhere.com/en-gb/accounts/login/"
+        )
+        login_page = LoginPage(browser, login_link)
+
+        email = f"test_{uuid4().hex}@example.com"
+        password = f"Qa!{uuid4().hex}"
+
+        login_page.open()
+        login_page.register_new_user(email, password)
+        login_page.should_be_authorized_user()
 
     @pytest.mark.need_review
     def test_user_can_add_product_to_basket(self, browser):
@@ -35,7 +50,20 @@ class TestUserAddToBasketFromProductPage():
 
 
 @pytest.mark.need_review
-@pytest.mark.parametrize('num', [*range(7), pytest.param(7, marks=pytest.mark.xfail), *range(8,10)])
+@pytest.mark.parametrize(
+    "num",
+    [
+        *range(7),
+        pytest.param(
+            7,
+            marks=pytest.mark.xfail(
+                reason="offer7: название книги в сообщении не совпадает с названием товара",
+                raises=AssertionError,
+            ),
+        ),
+        *range(8, 10),
+    ],
+)
 def test_guest_can_add_product_to_basket(browser, num):
     link =  f"http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer{num}"
     page = ProductPage(browser, link)
@@ -70,7 +98,10 @@ def test_guest_cant_see_product_in_basket_opened_from_product_page(browser):
     basket_page.is_not_element_present()
     basket_page.is_empty_text_present()
 
-@pytest.mark.xfail
+@pytest.mark.xfail(
+    reason="Учебный сценарий: после добавления товара сообщение присутствует",
+    raises=AssertionError,
+)
 def test_guest_cant_see_success_message_after_adding_product_to_basket(browser):
     link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/"
     page = ProductPage(browser, link)
@@ -84,7 +115,11 @@ def test_guest_cant_see_success_message(browser):
     page.open()
     page.is_not_element_present()
 
-@pytest.mark.xfail
+
+@pytest.mark.xfail(
+    reason="Сообщение об успешном добавлении не исчезает за 4 секунды",
+    raises=AssertionError,
+)
 def test_message_disappeared_after_adding_product_to_basket(browser):
     link = 'http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/'
     page = ProductPage(browser, link)

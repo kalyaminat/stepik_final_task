@@ -14,7 +14,7 @@ class LoginPageLocators():
     LOGIN_FORM = (By.CSS_SELECTOR, "#login_form")
     REGISTER_FORM = (By.CSS_SELECTOR, "#register_form")
     REMAIL = (By.CSS_SELECTOR, '#id_registration-email')
-    RPASSWORD = (By.CSS_SELECTOR, '#id_registration-password')
+    RPASSWORD = (By.CSS_SELECTOR, '#id_registration-password1')
     RPASSWORD2 = (By.CSS_SELECTOR, '#id_registration-password2')
     RBUTTON = (By.CSS_SELECTOR, "button[name='registration_submit']")
     EMAIL = (By.CSS_SELECTOR, '#id_login-username')
